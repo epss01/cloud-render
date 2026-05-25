@@ -1,0 +1,34 @@
+{% extends "gallery/base.html" %}
+{% block title %}{% if object %}Edit Photo{% else %}Add Photo{% endif %} — AlbumCloud{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>{% if object %}✏️ Edit Photo{% else %}📷 Upload Photo{% endif %}</h2>
+    <p class="form-subtitle">{% if object %}Update this photo's details.{% else %}Add a new photo to <strong>{{ album.title }}</strong>.{% endif %}</p>
+
+    {% if object.image %}
+    <div class="img-preview-label">Current Image</div>
+    <div class="img-preview-container">
+        <img src="{{ object.image.url }}" alt="{{ object.title }}">
+    </div>
+    {% endif %}
+
+    {% if form.errors %}
+    <div class="form-errors">
+        {% for field in form %}
+            {% for error in field.errors %}<p>{{ field.label }}: {{ error }}</p>{% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="flex:2;">{% if object %}Update Photo{% else %}Upload Photo{% endif %}</button>
+            <a href="{% url 'album_detail' album.pk %}" class="btn btn-secondary" style="flex:1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "gallery/base.html" %}
+{% block title %}Delete "{{ album.title }}" — AlbumCloud{% endblock %}
+
+{% block content %}
+<div class="delete-card">
+    <div class="delete-icon">⚠️</div>
+    <h2>Delete Album</h2>
+    <p>You are about to permanently delete <strong>"{{ album.title }}"</strong> and all {{ album.photo_count }} photo{{ album.photo_count|pluralize }} inside it. Images will also be removed from Cloudinary. This action cannot be undone.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-actions" style="justify-content:center;">
+            <button type="submit" class="btn btn-danger">Yes, Delete Album</button>
+            <a href="{% url 'album_detail' album.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

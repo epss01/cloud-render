@@ -1,0 +1,67 @@
+{% extends "gallery/base.html" %}
+{% block title %}AlbumCloud — Your Photo Albums{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Photo Albums</h1>
+    <p>Browse and manage your cloud-hosted photo collections</p>
+</div>
+
+<div class="action-bar">
+    <form method="GET" class="search-bar">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search albums..." class="form-input">
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        {% if query %}<a href="{% url 'album_list' %}" class="btn btn-secondary btn-sm">Clear</a>{% endif %}
+    </form>
+    {% if user.is_authenticated %}
+        <a href="{% url 'album_create' %}" class="btn btn-primary">＋ New Album</a>
+    {% endif %}
+</div>
+
+{% if albums %}
+<div class="grid grid-3">
+    {% for album in albums %}
+    <div class="card">
+        <a href="{% url 'album_detail' album.pk %}">
+            {% if album.cover_image %}
+                <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" class="card-img">
+            {% else %}
+                <div class="card-img-placeholder">📁</div>
+            {% endif %}
+        </a>
+        <div class="card-body">
+            <h3 class="card-title"><a href="{% url 'album_detail' album.pk %}">{{ album.title }}</a></h3>
+            <p class="card-text">{{ album.description|truncatewords:20|default:"No description" }}</p>
+            <div class="card-meta">
+                <span class="card-badge">📷 {{ album.num_photos }} photo{{ album.num_photos|pluralize }}</span>
+                <span>by {{ album.created_by.username }} · {{ album.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">&laquo; Prev</a>
+    {% endif %}
+    <span class="current">{{ page_obj.number }}</span>
+    <span class="page-info">of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📸</div>
+    <h3>{% if query %}No albums match "{{ query }}"{% else %}No albums yet{% endif %}</h3>
+    <p>{% if query %}Try a different search term.{% else %}Create your first album to start organizing photos.{% endif %}</p>
+    {% if user.is_authenticated and not query %}
+        <a href="{% url 'album_create' %}" class="btn btn-primary">＋ Create First Album</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

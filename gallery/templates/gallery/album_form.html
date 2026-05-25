@@ -1,0 +1,34 @@
+{% extends "gallery/base.html" %}
+{% block title %}{% if object %}Edit Album{% else %}Create Album{% endif %} — AlbumCloud{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>{% if object %}✏️ Edit Album{% else %}📁 Create New Album{% endif %}</h2>
+    <p class="form-subtitle">{% if object %}Update your album details below.{% else %}Give your album a title and optional cover image.{% endif %}</p>
+
+    {% if object.cover_image %}
+    <div class="img-preview-label">Current Cover Image</div>
+    <div class="img-preview-container">
+        <img src="{{ object.cover_image.url }}" alt="{{ object.title }}">
+    </div>
+    {% endif %}
+
+    {% if form.errors %}
+    <div class="form-errors">
+        {% for field in form %}
+            {% for error in field.errors %}<p>{{ field.label }}: {{ error }}</p>{% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" style="flex:2;">{% if object %}Update Album{% else %}Create Album{% endif %}</button>
+            <a href="{% if object %}{% url 'album_detail' object.pk %}{% else %}{% url 'album_list' %}{% endif %}" class="btn btn-secondary" style="flex:1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
