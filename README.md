@@ -4,7 +4,7 @@ A **production-ready** Photo Album Management application built with Django, Clo
 
 ## 🚀 Live Application
 
-**Live URL:** [https://my-application-demo.onrender.com](https://my-application-demo.onrender.com)
+**Live URL:** [[https://my-application-demo.onrender.com](https://cloud-render-gep1.onrender.com))
 
 ## 📸 Features
 
